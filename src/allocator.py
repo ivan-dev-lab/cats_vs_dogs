@@ -30,6 +30,8 @@ def allocate ():
 
         pet = "cat" if img_name.find("cat") != -1 else "dog"
 
+        # Предполагаемый метод работы функции check_len в условиях, что она проверяет заполненность всего каталога в целом, в случае если он не заполнен, то проверяет заполненность его подкаталогов: cat/ и dog/ , каждый из которых должен содержать в себе [кол-во файлов в каталоге]/2
+
         if check_len(os.path.join(ROOT_DIR, "train"), dir_size=train_size) == False:
             if check_len(os.path.join(ROOT_DIR, "train", pet), dir_size=train_size/2) == False:
                 dst = os.path.join(ROOT_DIR, "train", pet, img_name)
