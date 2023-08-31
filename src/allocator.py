@@ -31,5 +31,5 @@ def allocate ():
 
     copy_images(start_idx=0, end_idx=train_size, src=os.path.join(ROOT_DIR, "images"), dst=os.path.join(ROOT_DIR, "train"))
     copy_images(start_idx=train_size, end_idx=test_size, src=os.path.join(ROOT_DIR, "images"), dst=os.path.join(ROOT_DIR, "test"))
-    copy_images(start_idx=test_size, end_idx=control_size, src=os.path.join(ROOT_DIR, "images"), dst=os.path.join(ROOT_DIR, "control"))
+    copy_images(start_idx=test_size, end_idx=control_size, src=os.path.join(ROOT_DIR, "images"), dst=os.path.join(ROOT_DIR, "val"))
 
