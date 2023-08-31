@@ -4,49 +4,37 @@ import os
 
 ROOT_DIR = "D:/!BackUp/программирование/python/Ai/данные/cats_vs_dogs"
 
-def create_dirs (dir_name: str):
+def create_dirs (dir_name: str) -> None:
     path = os.path.join(ROOT_DIR, dir_name)
     if os.path.exists(path):
         shutil.rmtree(path)
     os.makedirs(path)
-    os.makedirs(os.path.join(path, "cat"))
-    os.makedirs(os.path.join(path, "dog"))
+    os.makedirs(os.path.join(path, "cats"))
+    os.makedirs(os.path.join(path, "dogs"))
 
 
-def check_len (dir_name: str, dir_size: int) -> bool:
-    if len(os.listdir(dir_name)) == dir_size:
-        return True
-    else: return False
+def copy_images (start_idx: int, end_idx: int, src: str, dst: str) -> None:
+    for i in range(start_idx, end_idx):
+        shutil.copy(src=os.path.join(src, "cat."+str(i)+".jpg"), 
+                    dst=os.path.join(dst, "cats", "cat."+str(i)+".jpg"))
+        shutil.copy(src=os.path.join(src, "dog."+str(i)+".jpg"), 
+                    dst=os.path.join(dst, "dogs", "dog."+str(i)+".jpg"))
+        
+        print(i, end_idx, sep="/")
 
 def allocate ():
     [create_dirs(path) for path in ["train", "test", "control"]]
 
     dataset_size = len(os.listdir(os.path.join(ROOT_DIR, "images")))
-    train_size, test_size, control_size = (0.7*dataset_size, 0.15*dataset_size, 0.15*dataset_size)
 
-    for img_name in os.listdir(os.path.join(ROOT_DIR, "images")):
-        src = os.path.join(ROOT_DIR, "images", img_name)
-        print("images",src.split("\\")[-1:][0] ,sep="/", end=" -> ")
+    # значения делятся на 2, т.к необходимо создать 2 каталога для сохранения данных, т.е train_size - объем всего каталога / 2 = объемы каталогов cats/ и dogs/
+    train_size, test_size, control_size = (int((0.7*dataset_size)/2), int((0.20*dataset_size)/2), int((0.10*dataset_size)/2))
 
-        pet = "cat" if img_name.find("cat") != -1 else "dog"
+    print(train_size, test_size, control_size)
 
-        # Предполагаемый метод работы функции check_len в условиях, что она проверяет заполненность всего каталога в целом, в случае если он не заполнен, то проверяет заполненность его подкаталогов: cat/ и dog/ , каждый из которых должен содержать в себе [кол-во файлов в каталоге]/2
+    copy_images(start_idx=0, end_idx=train_size, src=os.path.join(ROOT_DIR, "images"), dst=os.path.join(ROOT_DIR, "train"))
+    copy_images(start_idx=train_size, end_idx=test_size, src=os.path.join(ROOT_DIR, "images"), dst=os.path.join(ROOT_DIR, "test"))
+    copy_images(start_idx=test_size, end_idx=control_size, src=os.path.join(ROOT_DIR, "images"), dst=os.path.join(ROOT_DIR, "control"))
 
-        if check_len(os.path.join(ROOT_DIR, "train"), dir_size=train_size) == False:
-            if check_len(os.path.join(ROOT_DIR, "train", pet), dir_size=train_size/2) == False:
-                dst = os.path.join(ROOT_DIR, "train", pet, img_name)
-            else: continue
-        elif check_len(os.path.join(ROOT_DIR, "test"), dir_size=test_size) == False:
-            if check_len(os.path.join(ROOT_DIR, "test", pet), dir_size=test_size/2) == False:
-                dst = os.path.join(ROOT_DIR, "test", pet, img_name)
-            else: continue
-        elif check_len(os.path.join(ROOT_DIR, "control"), dir_size=control_size) == False:
-            if check_len(os.path.join(ROOT_DIR, "control", pet), dir_size=control_size/2) == False:
-                dst = os.path.join(ROOT_DIR, "control", pet, img_name)
-            else: continue
-        
-        print(dst.split("\\")[1], dst.split("\\")[2], dst.split("\\")[3], sep="/", end=" -> ")
-        print(len(os.listdir("/".join(dst.split("\\")[:-1]))))
-        shutil.copy(src, dst)   
 
 allocate()
