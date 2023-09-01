@@ -19,17 +19,16 @@ def copy_images (start_idx: int, end_idx: int, src: str, dst: str) -> None:
         shutil.copy(src=os.path.join(src, "dog."+str(i)+".jpg"), 
                     dst=os.path.join(dst, "dogs", "dog."+str(i)+".jpg"))
         
-        print(i, end_idx, sep="/")
-
 def allocate ():
-    [create_dirs(path) for path in ["train", "test", "control"]]
+    [create_dirs(path) for path in ["train", "val", "test"]]
 
-    dataset_size = len(os.listdir(os.path.join(ROOT_DIR, "images")))
+    src_dir = os.path.join(ROOT_DIR, "images")
+    dataset_size = len(os.listdir(src_dir))
 
     # значения делятся на 2, т.к необходимо создать 2 каталога для сохранения данных, т.е train_size - объем всего каталога / 2 = объемы каталогов cats/ и dogs/
-    train_size, test_size, control_size = (int((0.7*dataset_size)/2), int((0.20*dataset_size)/2), int((0.10*dataset_size)/2))
+    train_size, val_size, test_size = (int((0.7*dataset_size)/2), int((0.20*dataset_size)/2), int((0.10*dataset_size)/2))
+    train_dir, val_dir, test_dir = os.path.join(ROOT_DIR, "train"), os.path.join(ROOT_DIR, "val"), os.path.join(ROOT_DIR, "test")
 
-    copy_images(start_idx=0, end_idx=train_size, src=os.path.join(ROOT_DIR, "images"), dst=os.path.join(ROOT_DIR, "train"))
-    copy_images(start_idx=train_size, end_idx=test_size, src=os.path.join(ROOT_DIR, "images"), dst=os.path.join(ROOT_DIR, "test"))
-    copy_images(start_idx=test_size, end_idx=control_size, src=os.path.join(ROOT_DIR, "images"), dst=os.path.join(ROOT_DIR, "val"))
-
+    copy_images(start_idx=0, end_idx=train_size, src=src_dir, dst=train_dir)
+    copy_images(start_idx=train_size, end_idx=train_size+val_size, src=src_dir, dst=val_dir)
+    copy_images(start_idx=train_size+val_size, end_idx=train_size+val_size+test_size, src=src_dir, dst=test_dir)
