@@ -60,4 +60,3 @@ else:
         print(f"Точность модели на тестовых данных = {scores[1]*100}%")
 
         model.save("models/Classification.h5")
-    
