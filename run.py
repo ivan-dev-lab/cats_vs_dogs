@@ -15,7 +15,7 @@ else:
     img_width, img_height = 32, 32
     
     # проверка наличия сохраненной модели. Если сохраненных моделей в каталоге models/ нет, то будет процесс обучения
-    if len(os.listdir("./models/")) == 1:
+    if len(os.listdir("./models/")) == 0:
         input_shape = (img_width, img_height, 3)
 
         data_gen = ImageDataGenerator(rescale=1/255)
