@@ -1,8 +1,20 @@
 import os
+import numpy as np
 from pathlib import Path
-from keras.preprocessing.image import ImageDataGenerator
+from keras.preprocessing.image import ImageDataGenerator, image_utils
+from keras.models import load_model
+from keras import Model
 from src.create_model import create_model
-  
+
+def single_prediction (model: Model, img_path: str, sizes: tuple[int]) -> ...:
+    img = image_utils.load_img(path=img_path, target_size=sizes)
+    img_array = image_utils.img_to_array(img)
+    img_array = np.expand_dims(img_array, axis=0)
+    img_array = img_array/255
+    predicton = model.predict(img_array)
+
+    return predicton
+
 ROOT_DIR = "D:/!BackUp/программирование/python/Ai/данные/cats_vs_dogs"
 train_dir, val_dir, test_dir = os.path.join(ROOT_DIR, "train"), os.path.join(ROOT_DIR, "val"), os.path.join(ROOT_DIR, "test")
 train_size, val_size, test_size = len(list(Path(train_dir).rglob("*.jpg"))), len(list(Path(val_dir).rglob("*.jpg"))), len(list(Path(test_dir).rglob("*.jpg")))
@@ -59,9 +71,9 @@ else:
 
         print(f"Точность модели на тестовых данных = {scores[1]*100}%")
 
-<<<<<<< HEAD
         model.save("models/Classification.h5")
-=======
-        model.save("models/Classification.h5")
-    
->>>>>>> 1e9aba4b93a6801113467bb5ee20570b73e20795
+
+    model = load_model("models/Classification.h5")
+    prediction = single_prediction(model, img_path="images/test_dog.jpg", sizes=(img_width, img_height))
+
+    print(f"На изображении {'кот' if prediction[0][0] < 0.5 else 'собака'} с вероятностью {(1-prediction[0][0])*100 if prediction[0][0] < 0.5 else prediction[0][0]*100}%")
