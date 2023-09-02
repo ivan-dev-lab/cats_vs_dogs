@@ -13,45 +13,51 @@ elif len(list(Path(os.path.join(ROOT_DIR, "images")).rglob("*.jpg"))) < train_si
     raise ValueError("Каталоги с тренировочной, валидационной и тестовой выборками содержат больше файлов, чем исходный каталог")
 else:
     img_width, img_height = 32, 32
-    input_shape = (img_width, img_height, 3)
+    
+    # проверка наличия сохраненной модели. Если сохраненных моделей в каталоге models/ нет, то будет процесс обучения
+    if len(os.listdir("./models/")) == 1:
+        input_shape = (img_width, img_height, 3)
 
-    data_gen = ImageDataGenerator(rescale=1/255)
-    batch_size = 32
+        data_gen = ImageDataGenerator(rescale=1/255)
+        batch_size = 32
 
-    train_gen = data_gen.flow_from_directory(
-        directory=train_dir,
-        target_size=(img_width, img_height),
-        batch_size=batch_size,
-        class_mode="binary"
-    )
+        train_gen = data_gen.flow_from_directory(
+            directory=train_dir,
+            target_size=(img_width, img_height),
+            batch_size=batch_size,
+            class_mode="binary"
+        )
 
-    val_gen = data_gen.flow_from_directory(
-        directory=val_dir,
-        target_size=(img_width, img_height),
-        batch_size=batch_size,
-        class_mode="binary"
-    )
+        val_gen = data_gen.flow_from_directory(
+            directory=val_dir,
+            target_size=(img_width, img_height),
+            batch_size=batch_size,
+            class_mode="binary"
+        )
 
-    test_gen = data_gen.flow_from_directory(
-        directory=test_dir,
-        target_size=(img_width, img_height),
-        batch_size=batch_size,
-        class_mode="binary"
-    )
+        test_gen = data_gen.flow_from_directory(
+            directory=test_dir,
+            target_size=(img_width, img_height),
+            batch_size=batch_size,
+            class_mode="binary"
+        )
 
-    model = create_model(input_shape)
+        model = create_model(input_shape)
 
-    model.fit_generator(
-        generator=train_gen,
-        steps_per_epoch=train_size//batch_size,
-        epochs=30,
-        validation_data=val_gen,
-        validation_steps=val_size//batch_size
-    )
+        model.fit(
+            train_gen,
+            steps_per_epoch=train_size//batch_size,
+            epochs=30,
+            validation_data=val_gen,
+            validation_steps=val_size//batch_size
+        )
 
-    scores = model.evaluate_generator(
-        generator=test_gen,
-        steps=test_size//batch_size
-    )
+        scores = model.evaluate(
+            test_gen,
+            steps=test_size//batch_size
+        )
 
-    print(f"Точность модели на тестовых данных = {scores[1]*100}%")
+        print(f"Точность модели на тестовых данных = {scores[1]*100}%")
+
+        model.save("models/Classification.h5")
+    
