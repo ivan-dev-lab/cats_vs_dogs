@@ -73,7 +73,9 @@ else:
 
         model.save("models/Classification.h5")
 
+    img_path = input("Введите путь до изображения с кошкой или собакой: ")
+
     model = load_model("models/Classification.h5")
-    prediction = single_prediction(model, img_path="images/test_dog.jpg", sizes=(img_width, img_height))
+    prediction = single_prediction(model, img_path=img_path, sizes=(img_width, img_height))
 
     print(f"На изображении {'кот' if prediction[0][0] < 0.5 else 'собака'} с вероятностью {(1-prediction[0][0])*100 if prediction[0][0] < 0.5 else prediction[0][0]*100}%")
