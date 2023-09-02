@@ -6,7 +6,7 @@ from keras.models import load_model
 from keras import Model
 from src.create_model import create_model
 
-def single_prediction (model: Model, img_path: str, sizes: tuple[int]) -> ...:
+def single_prediction (model: Model, img_path: str, sizes: tuple[int]) -> np.array:
     img = image_utils.load_img(path=img_path, target_size=sizes)
     img_array = image_utils.img_to_array(img)
     img_array = np.expand_dims(img_array, axis=0)
