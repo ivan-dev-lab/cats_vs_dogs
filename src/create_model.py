@@ -20,7 +20,7 @@ def create_model (input_shape: tuple) -> Model:
     model.add(Dropout(0.5))
     model.add(Dense(1, activation="sigmoid"))
 
-    #model.summary()
+    model.summary()
 
     model.compile(
         optimizer=RMSprop(learning_rate=0.001),
@@ -29,6 +29,3 @@ def create_model (input_shape: tuple) -> Model:
     )
 
     return model
-    
-
-create_model(input_shape=(32,32,3))
