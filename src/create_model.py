@@ -20,8 +20,6 @@ def create_model (input_shape: tuple) -> Model:
     model.add(Dropout(0.5))
     model.add(Dense(1, activation="sigmoid"))
 
-    model.summary()
-
     model.compile(
         optimizer=RMSprop(learning_rate=0.001),
         loss="binary_crossentropy",
